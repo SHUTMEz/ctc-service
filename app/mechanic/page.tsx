@@ -428,9 +428,7 @@ export default function MechanicDashboard() {
                                             <button onClick={() => updateStatus(job.id, "accepted")} className="px-3 py-2 rounded-lg bg-green-600 text-white font-medium hover:bg-green-700 transition-all duration-200 flex items-center justify-center gap-2">
                                                 <FaThumbsUp size={14} /> รับงาน
                                             </button>
-                                            <button onClick={() => openFailModal(job.id)} className="px-3 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition-all duration-200 flex items-center justify-center gap-2">
-                                                <FaTimesCircle size={14} /> ไม่สำเร็จ
-                                            </button>
+
                                         </>
                                     )}
 
