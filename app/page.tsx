@@ -14,8 +14,11 @@ export default function Home() {
             <h1 className="text-lg font-bold text-gray-800">ระบบแจ้งซ่อม</h1>
           </div>
           <div className="flex gap-4">
-            <Link href="/mechanic" className="px-4 py-2 text-blue-600 hover:text-blue-700 font-medium">
+            <Link href="/mechanic/login" className="px-4 py-2 text-blue-600 hover:text-blue-700 font-medium">
               เข้าสู่ระบบช่าง
+            </Link>
+            <Link href="/admin/login" className="px-4 py-2 text-red-600 hover:text-red-700 font-medium">
+              เข้าสู่ระบบผู้ดูแล
             </Link>
             <Link href="/request" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
               แจ้งปัญหา
