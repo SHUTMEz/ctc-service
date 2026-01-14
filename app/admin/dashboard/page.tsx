@@ -21,7 +21,7 @@ import { FaDownload } from "@react-icons/all-files/fa/FaDownload";
 import { FaUsers } from "@react-icons/all-files/fa/FaUsers";
 import { FaList } from "@react-icons/all-files/fa/FaList";
 
-type JobStatus = "pending" | "approved" | "rejected" | "assigned" | "completed" | "failed";
+type JobStatus = "pending" | "approved" | "rejected" | "completed" | "failed";
 type MechanicStatus = "active" | "inactive";
 
 type Job = {
@@ -32,7 +32,6 @@ type Job = {
   scheduled: string;
   status: JobStatus;
   details?: string;
-  assignedTo?: string;
   priority: "low" | "medium" | "high";
   estimatedHours: number;
   completedDate?: string;
@@ -81,7 +80,6 @@ const SAMPLE_JOBS: Job[] = [
     scheduled: "2026-01-07 11:30",
     status: "approved",
     details: "เครื่องพิมพ์เอกสารผิดปกติ",
-    assignedTo: "M-001",
     priority: "medium",
     estimatedHours: 2,
   },
@@ -91,12 +89,11 @@ const SAMPLE_JOBS: Job[] = [
     customer: "เจ้าหน้าที่รักษาความปลอดภัย",
     address: "ห้องควบคุม ชั้น B1",
     scheduled: "2026-01-07 13:00",
-    status: "assigned",
+    status: "approved",
     details: "ระบบกล้องวงจรปิดหลายตัวไม่ทำงาน",
-    assignedTo: "M-002",
     priority: "high",
     estimatedHours: 4,
-  },  {
+  }, {
     id: "J-2005",
     title: "ซ่อมแซม UPS",
     customer: "ห้องปฏิบัติการ",
@@ -104,7 +101,6 @@ const SAMPLE_JOBS: Job[] = [
     scheduled: "2026-01-06 10:00",
     status: "completed",
     details: "UPS เสีย สามารถซ่อมได้สำเร็จ",
-    assignedTo: "M-003",
     priority: "high",
     estimatedHours: 3,
     completedDate: "2026-01-06 12:30",
@@ -117,7 +113,6 @@ const SAMPLE_JOBS: Job[] = [
     scheduled: "2026-01-05 08:00",
     status: "failed",
     details: "ตรวจสอบระบบไฟหลัก",
-    assignedTo: "M-001",
     priority: "high",
     estimatedHours: 2,
     reason: "พบปัญหาแยกส่วน ต้องเรียกช่างไฟฟ้าทั่วไป"
@@ -191,14 +186,14 @@ export default function AdminDashboard() {
     );
   }
 
-  function assignJob(jobId: string, mechanicId: string) {
-    setJobs((prev) =>
-      prev.map((j) =>
-        j.id === jobId ? { ...j, status: "assigned", assignedTo: mechanicId } : j
-      )
-    );
-    closeModal();
-  }
+  // function assignJob(jobId: string, mechanicId: string) {
+  //   setJobs((prev) =>
+  //     prev.map((j) =>
+  //       j.id === jobId ? { ...j, status: "assigned", assignedTo: mechanicId } : j
+  //     )
+  //   );
+  //   closeModal();
+  // }
 
   function toggleMechanicStatus(mechanicId: string) {
     setMechanics((prev) =>
@@ -242,12 +237,12 @@ export default function AdminDashboard() {
     alert(`ดาวโหลดรายงาน: ${type}`);
   }
 
-  
+
 
   return (
     <div className="flex min-h-screen bg-[#F3F3F3]">
       {/* Modal */}
-      {modalOpen && (
+      {/* {modalOpen && (
         <>
           <div
             className={`fixed inset-0 bg-opacity-50 backdrop-blur-sm z-40 ${
@@ -294,20 +289,18 @@ export default function AdminDashboard() {
           </div>
         </>
       )}
-
+ */}
       {/* Mechanic Edit Modal */}
       {mechanicModalOpen && (
         <>
           <div
-            className={`fixed inset-0 bg-opacity-50 backdrop-blur-sm z-40 ${
-              mechanicModalClosing ? "animate-fadeOut" : "animate-fadeIn"
-            }`}
+            className={`fixed inset-0 bg-opacity-50 backdrop-blur-sm z-40 ${mechanicModalClosing ? "animate-fadeOut" : "animate-fadeIn"
+              }`}
             onClick={() => closeMechanicModal()}
           />
           <div
-            className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${
-              mechanicModalClosing ? "animate-slideDown" : "animate-slideUp"
-            }`}
+            className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${mechanicModalClosing ? "animate-slideDown" : "animate-slideUp"
+              }`}
           >
             <div
               className="bg-white rounded-lg shadow-2xl max-w-md w-full p-6"
@@ -360,7 +353,7 @@ export default function AdminDashboard() {
                   <label className="block text-sm font-medium text-gray-700 mb-3">สถานะ</label>
                   <button
                     onClick={() => toggleMechanicStatus(selectedMechanic!.id)}
-                    className={`w-full px-4 py-3 rounded-lg font-medium transition-all ${ selectedMechanic?.status === "active" ? "bg-green-600 text-white hover:bg-green-700" : "bg-gray-600 text-white hover:bg-gray-700"}`}
+                    className={`w-full px-4 py-3 rounded-lg font-medium transition-all ${selectedMechanic?.status === "active" ? "bg-green-600 text-white hover:bg-green-700" : "bg-gray-600 text-white hover:bg-gray-700"}`}
                   >
                     {selectedMechanic?.status === "active" ? "🔓 เปิดใช้งาน" : "🔒 ปิดใช้งาน"}
                   </button>
@@ -398,31 +391,28 @@ export default function AdminDashboard() {
             <ul className="flex flex-col gap-2 text-sm">
               <li
                 onClick={() => setActiveTab("summary")}
-                className={`px-4 py-2 rounded-lg font-medium cursor-pointer transition-all duration-200 flex items-center gap-2 ${
-                  activeTab === "summary"
+                className={`px-4 py-2 rounded-lg font-medium cursor-pointer transition-all duration-200 flex items-center gap-2 ${activeTab === "summary"
                     ? "bg-gray-900 text-white"
                     : "hover:bg-gray-100"
-                }`}
+                  }`}
               >
                 <FaStar size={14} /> สรุปข้อมูล
               </li>
               <li
                 onClick={() => setActiveTab("jobs")}
-                className={`px-4 py-2 rounded-lg font-medium cursor-pointer transition-all duration-200 flex items-center gap-2 ${
-                  activeTab === "jobs"
+                className={`px-4 py-2 rounded-lg font-medium cursor-pointer transition-all duration-200 flex items-center gap-2 ${activeTab === "jobs"
                     ? "bg-gray-900 text-white"
                     : "hover:bg-gray-100"
-                }`}
+                  }`}
               >
                 <FaList size={14} /> จัดการงาน
               </li>
               <li
                 onClick={() => setActiveTab("mechanics")}
-                className={`px-4 py-2 rounded-lg font-medium cursor-pointer transition-all duration-200 flex items-center gap-2 ${
-                  activeTab === "mechanics"
+                className={`px-4 py-2 rounded-lg font-medium cursor-pointer transition-all duration-200 flex items-center gap-2 ${activeTab === "mechanics"
                     ? "bg-gray-900 text-white"
                     : "hover:bg-gray-100"
-                }`}
+                  }`}
               >
                 <FaUsers size={14} /> จัดการช่าง
               </li>
@@ -501,10 +491,10 @@ export default function AdminDashboard() {
                   <div className="text-3xl font-bold text-green-600">{jobs.filter(j => j.status === "approved").length}</div>
                   <div className="text-sm text-gray-600 mt-2">อนุมัติแล้ว</div>
                 </div>
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
+                {/* <div className="text-center p-4 bg-blue-50 rounded-lg">
                   <div className="text-3xl font-bold text-blue-600">{jobs.filter(j => j.status === "assigned").length}</div>
                   <div className="text-sm text-gray-600 mt-2">มอบหมายแล้ว</div>
-                </div>
+                </div> */}
                 <div className="text-center p-4 bg-red-50 rounded-lg">
                   <div className="text-3xl font-bold text-red-600">{jobs.filter(j => j.status === "rejected").length}</div>
                   <div className="text-sm text-gray-600 mt-2">ปฏิเสธ</div>
@@ -569,19 +559,16 @@ export default function AdminDashboard() {
                       <div className="text-xs text-gray-600">{job.customer}</div>
                     </div>
                     <span
-                      className={`px-3 py-1 rounded-lg text-white text-xs font-medium ${
-                        job.status === "pending"
+                      className={`px-3 py-1 rounded-lg text-white text-xs font-medium ${job.status === "pending"
                           ? "bg-yellow-500"
                           : job.status === "approved"
-                          ? "bg-green-600"
-                          : job.status === "assigned"
-                          ? "bg-blue-600"
-                          : "bg-red-500"
-                      }`}
+                            ? "bg-green-600"
+                            : "bg-red-500"
+                        }`}
                     >
                       {job.status === "pending" && "รอตรวจสอบ"}
                       {job.status === "approved" && "อนุมัติแล้ว"}
-                      {job.status === "assigned" && "มอบหมายแล้ว"}
+                      {/* {job.status === "assigned" && "มอบหมายแล้ว"} */}
                       {job.status === "rejected" && "ปฏิเสธ"}
                     </span>
                   </div>
@@ -642,37 +629,37 @@ export default function AdminDashboard() {
 
             {/* Status Filters */}
             <div className="flex gap-2 mb-6 flex-wrap">
-              <button 
+              <button
                 onClick={() => setJobFilter("all")}
                 className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 ${jobFilter === "all" ? 'bg-gray-900 text-white' : 'bg-white border border-gray-200 hover:bg-gray-100'}`}
               >
                 <FaStar size={14} /> ทั้งหมด ({jobs.length})
               </button>
-              <button 
+              <button
                 onClick={() => setJobFilter("pending")}
                 className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 ${jobFilter === "pending" ? 'bg-yellow-500 text-white' : 'bg-white border border-gray-200 hover:bg-gray-100'}`}
               >
                 <FaClock size={14} /> รอตรวจสอบ ({jobs.filter(j => j.status === "pending").length})
               </button>
-              <button 
+              <button
                 onClick={() => setJobFilter("approved")}
                 className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 ${jobFilter === "approved" ? 'bg-green-600 text-white' : 'bg-white border border-gray-200 hover:bg-gray-100'}`}
               >
                 <FaCheck size={14} /> อนุมัติแล้ว ({jobs.filter(j => j.status === "approved").length})
               </button>
-              <button 
+              {/* <button
                 onClick={() => setJobFilter("assigned")}
                 className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 ${jobFilter === "assigned" ? 'bg-blue-600 text-white' : 'bg-white border border-gray-200 hover:bg-gray-100'}`}
               >
                 <FaThumbsUp size={14} /> มอบหมายแล้ว ({jobs.filter(j => j.status === "assigned").length})
-              </button>
-              <button 
+              </button> */}
+              <button
                 onClick={() => setJobFilter("completed")}
                 className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 ${jobFilter === "completed" ? 'bg-green-700 text-white' : 'bg-white border border-gray-200 hover:bg-gray-100'}`}
               >
                 <FaCheckCircle size={14} /> เสร็จสิ้น ({jobs.filter(j => j.status === "completed").length})
               </button>
-              <button 
+              <button
                 onClick={() => setJobFilter("failed")}
                 className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 ${jobFilter === "failed" ? 'bg-red-600 text-white' : 'bg-white border border-gray-200 hover:bg-gray-100'}`}
               >
@@ -688,112 +675,111 @@ export default function AdminDashboard() {
                   return j.status === jobFilter;
                 })
                 .map((job) => (
-                <div
-                  key={job.id}
-                  className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all"
-                >
-                  <div className="flex gap-4">
-                    <div className="flex-1">
-                      <div className="font-bold text-lg mb-2">
-                        {job.title} —{" "}
-                        <span className="text-gray-500 text-sm">{job.id}</span>
-                      </div>
-                      <div className="text-gray-600 text-sm flex items-center gap-3 mb-2">
-                        <span className="flex items-center gap-1">
-                          <FaUser size={14} /> {job.customer}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <FaMapMarkerAlt size={14} /> {job.address}
-                        </span>
-                      </div>
-                      <div className="text-gray-500 text-sm flex items-center gap-1 mb-2">
-                        <FaCalendarAlt size={13} /> {job.scheduled}
-                      </div>
-                      <div className="text-sm text-gray-700">
-                        <span className="font-medium">ความสำคัญ: </span>
-                        {job.priority === "high" && (
-                          <span className="text-red-600">สูง</span>
-                        )}
-                        {job.priority === "medium" && (
-                          <span className="text-yellow-600">ปานกลาง</span>
-                        )}
-                        {job.priority === "low" && (
-                          <span className="text-green-600">ต่ำ</span>
-                        )}
-                        <span className="mx-4 font-medium">โมง: {job.estimatedHours}</span>
-                      </div>
-                      {job.details && (
-                        <div className="text-gray-700 text-sm mt-2">
-                          {job.details}
+                  <div
+                    key={job.id}
+                    className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all"
+                  >
+                    <div className="flex gap-4">
+                      <div className="flex-1">
+                        <div className="font-bold text-lg mb-2">
+                          {job.title} —{" "}
+                          <span className="text-gray-500 text-sm">{job.id}</span>
                         </div>
-                      )}
-                    </div>
-
-                    <div className="text-right min-w-max">
-                      <div className="mb-4">
-                        <span
-                          className={`px-3 py-1 rounded-lg text-white text-sm font-medium ${
-                            job.status === "pending"
-                              ? "bg-yellow-500"
-                              : job.status === "approved"
-                              ? "bg-green-600"
-                              : job.status === "assigned"
-                              ? "bg-blue-600"
-                              : job.status === "completed"
-                              ? "bg-green-700"
-                              : "bg-red-600"
-                          }`}
-                        >
-                          {job.status === "pending" && "รอตรวจสอบ"}
-                          {job.status === "approved" && "อนุมัติแล้ว"}
-                          {job.status === "assigned" && "มอบหมายแล้ว"}
-                          {job.status === "completed" && "เสร็จสิ้น"}
-                          {job.status === "rejected" && "ปฏิเสธ"}
-                          {job.status === "failed" && "ไม่สำเร็จ"}
-                        </span>
-                      </div>
-
-                      <div className="flex gap-2 flex-col">
-                        {job.status === "pending" && (
-                          <>
-                            <button
-                              onClick={() => approveJob(job.id)}
-                              className="px-3 py-2 rounded-lg bg-green-600 text-white font-medium hover:bg-green-700 transition-all text-sm"
-                            >
-                              <FaCheck size={12} className="inline mr-1" /> อนุมัติ
-                            </button>
-                            <button
-                              onClick={() => rejectJob(job.id)}
-                              className="px-3 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition-all text-sm"
-                            >
-                              <FaTimesCircle size={12} className="inline mr-1" /> ปฏิเสธ
-                            </button>
-                          </>
-                        )}
-
-                        {job.status === "approved" && (
-                          <button
-                            onClick={() => {
-                              setSelectedJob(job);
-                              setModalOpen(true);
-                            }}
-                            className="px-3 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-all text-sm"
-                          >
-                            <FaThumbsUp size={12} className="inline mr-1" /> มอบหมาย
-                          </button>
-                        )}
-
-                        {job.status === "assigned" && (
-                          <div className="text-xs text-gray-600 p-2 bg-gray-50 rounded">
-                            มอบหมายให้:{" "}
-                            {mechanics.find((m) => m.id === job.assignedTo)?.name}
+                        <div className="text-gray-600 text-sm flex items-center gap-3 mb-2">
+                          <span className="flex items-center gap-1">
+                            <FaUser size={14} /> {job.customer}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <FaMapMarkerAlt size={14} /> {job.address}
+                          </span>
+                        </div>
+                        <div className="text-gray-500 text-sm flex items-center gap-1 mb-2">
+                          <FaCalendarAlt size={13} /> {job.scheduled}
+                        </div>
+                        <div className="text-sm text-gray-700">
+                          <span className="font-medium">ความสำคัญ: </span>
+                          {job.priority === "high" && (
+                            <span className="text-red-600">สูง</span>
+                          )}
+                          {job.priority === "medium" && (
+                            <span className="text-yellow-600">ปานกลาง</span>
+                          )}
+                          {job.priority === "low" && (
+                            <span className="text-green-600">ต่ำ</span>
+                          )}
+                          <span className="mx-4 font-medium">โมง: {job.estimatedHours}</span>
+                        </div>
+                        {job.details && (
+                          <div className="text-gray-700 text-sm mt-2">
+                            {job.details}
                           </div>
                         )}
                       </div>
+
+                      <div className="text-right min-w-max">
+                        <div className="mb-4">
+                          <span
+                            className={`px-3 py-1 rounded-lg text-white text-sm font-medium ${job.status === "pending"
+                                ? "bg-yellow-500"
+                                : job.status === "approved"
+                                  ? "bg-green-600"
+                                  // : job.status === "assigned"
+                                  //   ? "bg-blue-600"
+                                    : job.status === "completed"
+                                      ? "bg-green-700"
+                                      : "bg-red-600"
+                              }`}
+                          >
+                            {job.status === "pending" && "รอตรวจสอบ"}
+                            {job.status === "approved" && "อนุมัติแล้ว"}
+                            {/* {job.status === "assigned" && "มอบหมายแล้ว"} */}
+                            {job.status === "completed" && "เสร็จสิ้น"}
+                            {job.status === "rejected" && "ปฏิเสธ"}
+                            {job.status === "failed" && "ไม่สำเร็จ"}
+                          </span>
+                        </div>
+
+                        <div className="flex gap-2 flex-col">
+                          {job.status === "pending" && (
+                            <>
+                              <button
+                                onClick={() => approveJob(job.id)}
+                                className="px-3 py-2 rounded-lg bg-green-600 text-white font-medium hover:bg-green-700 transition-all text-sm"
+                              >
+                                <FaCheck size={12} className="inline mr-1" /> อนุมัติ
+                              </button>
+                              <button
+                                onClick={() => rejectJob(job.id)}
+                                className="px-3 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition-all text-sm"
+                              >
+                                <FaTimesCircle size={12} className="inline mr-1" /> ปฏิเสธ
+                              </button>
+                            </>
+                          )}
+
+                          {/* {job.status === "approved" && (
+                            // <button
+                            //   onClick={() => {
+                            //     setSelectedJob(job);
+                            //     setModalOpen(true);
+                            //   }}
+                            //   className="px-3 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-all text-sm"
+                            // >
+                            //   <FaThumbsUp size={12} className="inline mr-1" /> มอบหมาย
+                            // </button>
+                          )} */}
+{/* 
+                          {job.status === "assigned" && (
+                            <div className="text-xs text-gray-600 p-2 bg-gray-50 rounded">
+                              มอบหมายให้:{" "}
+                              {mechanics.find((m) => m.id === job.assignedTo)?.name}
+                            </div>
+                          )} */}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         )}
@@ -832,11 +818,10 @@ export default function AdminDashboard() {
                       <td className="px-4 py-3 font-bold">{mechanic.completedJobs}</td>
                       <td className="px-4 py-3">
                         <span
-                          className={`px-3 py-1 rounded-lg text-white text-sm font-medium ${
-                            mechanic.status === "active"
+                          className={`px-3 py-1 rounded-lg text-white text-sm font-medium ${mechanic.status === "active"
                               ? "bg-green-600"
                               : "bg-gray-500"
-                          }`}
+                            }`}
                         >
                           {mechanic.status === "active" ? "ใช้งาน" : "ปิดใช้งาน"}
                         </span>
